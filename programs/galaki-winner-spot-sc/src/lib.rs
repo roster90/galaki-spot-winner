@@ -25,6 +25,8 @@ pub mod galaki_winner_spot_sc {
 
 
     pub fn initialize(ctx: Context<InitializeGanaki>) -> Result<()> {
+        
+
         Ok(())
     }
 

@@ -9,15 +9,15 @@ pub enum AuthRole {
 }
 
 #[derive(PartialEq, Eq, AnchorSerialize, AnchorDeserialize, Clone, Debug, Copy)]
-pub enum DepositStatus {
+pub enum GameStatus {
     Waiting,
     Open,
     Close,
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone, Copy)]
-pub struct PackageItem {
-    pub id: u64,     //8
-    pub price: u64,  //8
-    pub reward: u64, //8
+pub struct GameInitParams {
+    pub start_time: i64,     //8
+    pub end_time: i64,  //8
+    pub currency: Pubkey
 }

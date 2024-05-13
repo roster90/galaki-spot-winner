@@ -33,8 +33,8 @@ impl AuthorityRole {
         self.role = role;
     }
 
-    pub fn has_authority(&self, authority: &Pubkey, role: AuthRole) -> bool {
-        self.owner == *authority && self.role == role
+    pub fn has_authority(&self, authority:Pubkey, role: AuthRole) -> bool {
+        self.owner == authority && self.role == role
     }
 }
 

@@ -16,6 +16,11 @@ pub enum GalaKiErrors {
     #[msg("Operator account invalid")]
     OperatorAccountInvalid,
 
+    #[msg("Only Operator")]
+    OnlyOperator,
+    #[msg("Only Admin")]
+    OnlyAdmin
+
 }
 
 impl From<GalaKiErrors> for ProgramError {

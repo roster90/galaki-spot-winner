@@ -4,8 +4,7 @@ use anchor_lang::prelude::*;
 #[account]
 pub struct Galaki {
     pub bump: u8,    //1
-    pub owner: Pubkey, //32
-    pub count_project: u64,
+    pub counter: u64,
     pub admin_role: Vec<Pubkey> ,
     pub version: String,
     pub pause: bool,
@@ -15,15 +14,13 @@ pub struct Galaki {
 impl Galaki {
     pub fn initialize(
         &mut self,
-        owner: &Pubkey,
-        bump: u8,
         admin_role: &Pubkey,
         operator_wallet: &Pubkey,
+        bump: u8,
 
     ) -> Result<()> {
-        self.owner = *owner;
         self.bump = bump;
-        self.count_project = 0;
+        self.counter = 1;
         self.version = String::from("1.0");
         self.pause = false;
         self.admin_role.push(*admin_role);
@@ -39,12 +36,21 @@ impl Galaki {
         self.version = version;
     }
     
-    pub fn set_count_project(&mut self, count_project: u64) {
-        self.count_project = count_project;
+    pub fn auto_increase_game(&mut self) {
+        self.counter = self.counter + 1;
     }
     
-    pub fn has_admin(&self, authority: &Pubkey) -> bool {
-        self.admin_role.contains(authority)
+    pub fn has_admin(&self, authority: Pubkey) -> bool {
+        self.admin_role.contains(&authority)
+    }
+
+    pub fn set_admin(&mut self, authority: Pubkey)-> Result<()> {
+        self.admin_role.push(authority);
+        Ok(())
+    }
+    pub fn remove_admin(&mut self, authority: Pubkey)-> Result<()> {
+        self.admin_role.retain(|&x| x != authority);
+        Ok(())
     }
     
 }
