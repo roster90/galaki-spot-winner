@@ -52,5 +52,13 @@ impl Galaki {
         self.admin_role.retain(|&x| x != authority);
         Ok(())
     }
+    pub fn change_operator_wallet(&mut self, new_operator_wallet: Pubkey) -> Result<()>{
+        self.operator_wallet = new_operator_wallet;
+        Ok(())
+    }
+
+    pub fn get_counter(&self) -> u64 {
+        self.counter
+    }
     
 }

@@ -19,7 +19,20 @@ pub enum GalaKiErrors {
     #[msg("Only Operator")]
     OnlyOperator,
     #[msg("Only Admin")]
-    OnlyAdmin
+    OnlyAdmin,
+    #[msg("Same the wallet address as the new operator wallet address")]
+    OperatorWalletSameAsNewWallet,
+    #[msg("Time invalid")]
+    TimeInvalid,
+
+    #[msg("Game project inactive")]
+    GameProjectInactive,
+
+    #[msg(" token account not match")]
+    TokenAccountNotMatch,
+
+    #[msg("Insufficient balance")]
+    InsufficientBalance,
 
 }
 

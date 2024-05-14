@@ -19,5 +19,6 @@ pub enum GameStatus {
 pub struct GameInitParams {
     pub start_time: i64,     //8
     pub end_time: i64,  //8
-    pub currency: Pubkey
+    pub currency: Pubkey,
+    pub price_per_spot: u32,
 }

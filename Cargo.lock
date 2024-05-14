@@ -919,6 +919,7 @@ dependencies = [
  "anchor-spl",
  "rand 0.8.5",
  "solana-program",
+ "solana-safe-math",
 ]
 
 [[package]]
@@ -1899,6 +1900,16 @@ dependencies = [
  "tiny-bip39",
  "wasm-bindgen",
  "zeroize",
+]
+
+[[package]]
+name = "solana-safe-math"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ccd6612e507fc0c6e17c51e3dfbed7b724f7c33cd4f5eb452d7dc4688ddaa888"
+dependencies = [
+ "solana-program",
+ "thiserror",
 ]
 
 [[package]]
