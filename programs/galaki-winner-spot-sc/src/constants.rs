@@ -10,3 +10,7 @@ pub const PLAYER_ACCOUNT: &[u8] = b"PLAYER";
 pub const GAME_PROJECT: &[u8] = b"GAME_PROJECT";
 
 pub const GALAKI_WINNER: &[u8] = b"GALAKI_WINNER";
+
+
+
+pub const STATE_SEED: &[u8] = b"CLIENTSEED";

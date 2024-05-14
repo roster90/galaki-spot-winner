@@ -1,7 +1,4 @@
-use anchor_lang::prelude::*;
-
-use crate::{ AuthorityRole, Galaki, AuthRole, GalaKiErrors};
-use crate::{ ADMIN_ROLE, GALAKI_WINNER, OPERATOR_ROLE};
+use crate::*;
 
 #[derive(Accounts)]
 #[instruction(new_admin: Pubkey)]

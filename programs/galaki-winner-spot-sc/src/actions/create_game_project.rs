@@ -1,8 +1,5 @@
 
-use anchor_lang::prelude::*;
-
-use crate::{ AuthRole, AuthorityRole, CreateGameEvent, GalaKiErrors, Galaki, GameInitParams, GameProject};
-use crate::{ OPERATOR_ROLE, GALAKI_WINNER, GAME_PROJECT};
+use crate::*;
 #[derive(Accounts)]
 pub struct CreateGameProject<'info> {
 

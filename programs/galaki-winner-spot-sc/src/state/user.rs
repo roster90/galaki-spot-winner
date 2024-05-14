@@ -1,7 +1,8 @@
 use anchor_lang::prelude::*;
+use borsh::{BorshDeserialize, BorshSerialize};
 
 #[account]
-pub struct User {
+pub struct Player {
     pub bump: u8,    //1
     pub owner: Pubkey, //32
     pub spot_numbers: Vec<u32>,
@@ -9,7 +10,7 @@ pub struct User {
 }
 
 
-impl User {
+impl Player {
     pub fn initialize(
         &mut self,
         owner: &Pubkey,
@@ -42,4 +43,30 @@ impl User {
         self.owner
     }
     
+}
+
+
+
+#[derive(BorshDeserialize, BorshSerialize, Debug)]
+pub struct State {
+    pub random_numbers : [f64; 256]
+}
+
+#[derive(BorshSerialize, BorshDeserialize, Debug, Clone, PartialEq)]
+pub enum RNGMethod {
+    Xorshift,
+    Hash,
+    FastHash,
+    None
+}
+
+#[derive(BorshSerialize, BorshDeserialize, Debug, Clone, PartialEq)]
+pub struct RNGMeta {
+    pub initial_seed : u64,
+    pub method : RNGMethod
+}
+
+pub struct HashStruct {
+    pub nonce : u64,
+    pub initial_seed : u64
 }

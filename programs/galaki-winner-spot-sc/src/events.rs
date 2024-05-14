@@ -42,5 +42,10 @@ pub struct UserJoinGameEvent {
     pub user: Pubkey,
     pub sport_numbers: u32,
 }
-
+#[event]
+pub struct RandomnessRequested {
+    pub vrf_client: Pubkey,
+    pub max_result: u64,
+    pub timestamp: i64,
+}
 

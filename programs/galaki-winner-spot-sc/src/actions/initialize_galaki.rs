@@ -1,8 +1,5 @@
 
-use anchor_lang::prelude::*;
-
-use crate::{ AuthorityRole, Galaki, AuthRole};
-use crate::{ ADMIN_ROLE, GALAKI_WINNER};
+use crate::*;
 
 
 #[derive(Accounts)]

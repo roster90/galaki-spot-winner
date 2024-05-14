@@ -1,6 +1,5 @@
 use anchor_lang::prelude::*;
 
-use rand::Rng;
 
 
 #[account]
@@ -37,18 +36,10 @@ impl  GameProject {
         self.price_per_spot = price_per_spot;
         Ok(())
     }
-    fn get_spot_numbers(&self) -> usize {
+    pub fn get_spot_numbers(&self) -> usize {
         self.spot_numbers.len()
     }
 
-    pub fn handle_set_random_winner( &mut self)-> Result<()> {
-        let range = self.get_spot_numbers() as u32;
-        let mut rng = rand::thread_rng();
-        let n2: u32 = rng.gen_range(0..range);
-        msg!("Random number: {}", n2);
-        self.spot_winner = n2;
-        Ok(())
-    }
 
     pub fn get_winner_number(&mut self) -> u32{
         self.spot_winner

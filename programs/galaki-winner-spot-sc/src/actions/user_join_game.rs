@@ -1,9 +1,10 @@
-use anchor_lang::prelude::*;
-use anchor_spl::token::{Mint, Token, TokenAccount};
-use anchor_spl::associated_token:: AssociatedToken;
+
+
+
+use anchor_spl::{associated_token::AssociatedToken, token::{Token, TokenAccount, Mint}};
 use solana_safe_math::SafeMath;
-use crate::{ GalaKiErrors, GameProject};
-use crate::GAME_PROJECT;
+
+use crate::*;
 
 
 #[derive(Accounts)]
@@ -17,6 +18,15 @@ pub struct PlayerJoinGame<'info> {
         constraint = game_project_pda.is_active() == true @ GalaKiErrors::GameProjectInactive,
     )]
     pub game_project_pda: Box<Account<'info, GameProject>>,
+
+    #[account(
+        init_if_needed,
+        payer = payer,
+        space = 8 + 32 + 8 + 32 + 32 + 1,
+        seeds = [GAME_PROJECT, game_id.to_be_bytes().as_ref(), payer.key().as_ref()],
+        bump 
+    )]
+    pub player_pda: Box<Account<'info, Player>>,
 
     #[account(init_if_needed,  
         payer = payer, 
@@ -44,6 +54,7 @@ pub struct PlayerJoinGame<'info> {
 
 pub fn handle_user_join_game(ctx: Context<PlayerJoinGame>, game_id: u64, number_sport: u32) -> Result<()> {
     let game_project_pda = &mut ctx.accounts.game_project_pda;
+    let player_pda = &mut ctx.accounts.player_pda;
     let game_ata = &mut ctx.accounts.game_ata;
     let user_ata: &mut Account<TokenAccount> = &mut ctx.accounts.user_ata;
     let token_mint = &ctx.accounts.token_mint;
@@ -67,6 +78,9 @@ pub fn handle_user_join_game(ctx: Context<PlayerJoinGame>, game_id: u64, number_
     let cpi_program = token_program.to_account_info();
 
     anchor_spl::token::transfer(CpiContext::new(cpi_program, cpi_accounts), total_amount)?;
+
+    //init user spot
+    player_pda.initialize(&payer.key(), ctx.bumps.player_pda, game_id)?;
 
     //calculate spot number for user
 

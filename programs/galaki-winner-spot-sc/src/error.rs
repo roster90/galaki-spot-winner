@@ -34,6 +34,13 @@ pub enum GalaKiErrors {
     #[msg("Insufficient balance")]
     InsufficientBalance,
 
+
+
+    #[msg("Switchboard VRF Account's authority should be set to the client's state pubkey")]
+    InvalidVrfAuthorityError,
+    #[msg("The max result must not exceed u64")]
+    MaxResultExceedsMaximum,
+
 }
 
 impl From<GalaKiErrors> for ProgramError {
@@ -41,3 +48,13 @@ impl From<GalaKiErrors> for ProgramError {
         ProgramError::Custom(e as u32)
     }
 }
+
+
+// #[error_code]
+// #[derive(Eq, PartialEq)]
+// pub enum VrfClientErrorCode {
+//     #[msg("Switchboard VRF Account's authority should be set to the client's state pubkey")]
+//     InvalidVrfAuthorityError,
+//     #[msg("The max result must not exceed u64")]
+//     MaxResultExceedsMaximum,
+// }

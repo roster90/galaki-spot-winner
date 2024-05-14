@@ -1,7 +1,4 @@
-use anchor_lang::prelude::*;
-
-use crate::{ AuthorityRole, Galaki, AuthRole, GalaKiErrors, ChangeOperatorWalletEvent};
-use crate::{ ADMIN_ROLE, GALAKI_WINNER};
+use crate::*;
 
 #[derive(Accounts)]
 #[instruction(new_operator_wallet: Pubkey)]
