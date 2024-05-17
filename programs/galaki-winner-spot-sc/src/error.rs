@@ -34,7 +34,11 @@ pub enum GalaKiErrors {
     #[msg("Insufficient balance")]
     InsufficientBalance,
 
+    #[msg("Random number invalid")]
+    RandomNumberInvalid,
 
+    #[msg("Game project not found")]
+    SpotAlreadyExist,
 
     #[msg("Switchboard VRF Account's authority should be set to the client's state pubkey")]
     InvalidVrfAuthorityError,

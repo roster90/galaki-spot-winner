@@ -24,6 +24,26 @@ pub struct ChangeOperatorWallet<'info> {
     pub system_program: Program<'info, System>, 
 }
 
+// impl ChangeOperatorWallet<'_> {
+//     pub fn actuate(&self, ctx: &Context<Self>, new_operator_wallet: &Pubkey) -> Result<()> {
+//         let mut galaki_pda =  ctx.accounts.galaki_account.clone();
+
+//         let auth = &ctx.accounts.authority;
+//         require!(galaki_pda.operator_wallet != *new_operator_wallet, GalaKiErrors::OperatorWalletSameAsNewWallet);
+//         galaki_pda.change_operator_wallet(*new_operator_wallet)?;
+    
+    
+//         //emit event
+//         emit!(ChangeOperatorWalletEvent{
+//             operator_wallet: *new_operator_wallet,
+//             time: Clock::get()?.unix_timestamp,
+//             admin: auth.key(),
+//         });
+//         Ok(())
+//     }
+    
+// }
+
 pub fn handle_change_operator_wallet(ctx: Context<ChangeOperatorWallet>, new_operator_wallet: Pubkey) -> Result<()> {
     let galaki_pda = &mut ctx.accounts.galaki_account;
 

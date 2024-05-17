@@ -1,6 +1,10 @@
 
 use crate::*;
+use anchor_spl::{associated_token::AssociatedToken, token::{Token, TokenAccount, Mint}};
+
+
 #[derive(Accounts)]
+#[instruction(data: GameInitParams)]
 pub struct CreateGameProject<'info> {
 
     #[account(
@@ -18,14 +22,23 @@ pub struct CreateGameProject<'info> {
         bump,
     )]
     pub game_project_account: Box<Account<'info, GameProject>>,
+    #[account(init_if_needed,  
+        payer = authority, 
+        associated_token::mint = token_mint, 
+        associated_token::authority = game_project_account)]
+    pub game_project_ata: Account<'info, TokenAccount>,
     #[account(
         seeds = [OPERATOR_ROLE, authority.key().as_ref()],
         bump = operator_account.bump,
         constraint = operator_account.has_authority(authority.key(), AuthRole::Operator) == true @ GalaKiErrors::OnlyOperator,
     )]
     pub operator_account: Account<'info, AuthorityRole>,
+
+    pub token_mint: Account<'info, Mint>,
     #[account(mut, signer)]
     pub authority: Signer<'info>,
+    pub token_program: Program<'info, Token>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
 
     pub system_program: Program<'info, System>,
 }

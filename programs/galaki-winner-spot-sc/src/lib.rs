@@ -57,14 +57,22 @@ pub mod galaki_winner_spot_sc {
     pub fn remove_operator(ctx: Context<RemoveOperator>, operator: Pubkey) -> Result<()> {
         set_auth_role::handle_remove_operator(ctx, operator)
     }
+    // #[access_control(ctx.accounts.validate(&ctx, &params))]
+    pub fn change_operator_wallet(ctx: Context<ChangeOperatorWallet>, new_operator_wallet: Pubkey) -> Result<()> {
+        change_operator_wallet::handle_change_operator_wallet(ctx, new_operator_wallet)
+    }
 
     //operator fn
     pub fn create_project(ctx: Context<CreateGameProject>, params: GameInitParams) -> Result<()> {
        create_game_project::handle_create_game_project(ctx, params)
     }
 
-    pub fn player_deposit_game(ctx: Context<PlayerJoinGame>, game_id: u64, number_spot: u32) -> Result<()> {
-        user_join_game::handle_user_join_game(ctx, game_id, number_spot)
+    pub fn player_deposit_game(ctx: Context<PlayerJoinGame>, game_id: u64) -> Result<()> {
+        user_join_game::handle_user_join_game(ctx, game_id)
+    }
+
+    pub fn request_randomness(ctx: Context<GetRandomNumber>) -> Result<()> {
+        get_random_number::handle_get_random_number(ctx)
     }
 
     // #[access_control(ctx.accounts.validate(&ctx, &params))]

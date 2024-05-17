@@ -36,16 +36,21 @@ describe("galaki-winner-spot-sc", () => {
   // });
 
   it("Test random", async () => {
-    // Add your test here.
-    const tx = await program.methods.getRandomNumber().accounts({
-      adminAccount: getAdminPda,
-      authority: provider.wallet.publicKey,
+    try {
+       // Add your test here.
+    const tx = await program.methods.requestRandomness().accounts({
+      payer: provider.wallet.publicKey,
       systemProgram: anchor.web3.SystemProgram.programId,
+      // slotHashes: anchor.web3.SYSVAR_SLOT_HASHES_PUBKEY,
     }).rpc();
     console.log("Your transaction signature", tx);
 
-    const state = await program.account.galaki.fetch(galaki_pda);
-    console.log("State", JSON.stringify(state));
+ 
+    } catch (error) {
+        console.log("Error", error);
+        
+    }
+   
 
     
 

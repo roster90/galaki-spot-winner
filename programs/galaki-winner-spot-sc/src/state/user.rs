@@ -5,7 +5,7 @@ use borsh::{BorshDeserialize, BorshSerialize};
 pub struct Player {
     pub bump: u8,    //1
     pub owner: Pubkey, //32
-    pub spot_numbers: Vec<u32>,
+    pub spot_numbers: Vec<u64>,
     pub game_id: u64,
 }
 
@@ -23,7 +23,7 @@ impl Player {
         Ok(())
     }
     
-    pub fn add_spot_number(&mut self, spot_number: u32) {
+    pub fn add_spot_number(&mut self, spot_number: u64) {
         //check if spot_number is already in the list
         if self.spot_numbers.contains(&spot_number) {
             return;
@@ -31,7 +31,7 @@ impl Player {
         self.spot_numbers.push(spot_number);
     }
     
-    pub fn get_spot_numbers(&self) -> Vec<u32> {
+    pub fn get_spot_numbers(&self) -> Vec<u64> {
         self.spot_numbers.clone()
     }
     
