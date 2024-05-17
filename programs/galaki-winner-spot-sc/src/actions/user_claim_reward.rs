@@ -9,7 +9,6 @@ pub struct UserClaimReward<'info> {
         seeds = [GAME_PROJECT, game_id.to_be_bytes().as_ref()],
         bump = game_project_pda.bump,
         constraint = game_project_pda.is_close == true @ GalaKiErrors::GameProjectInactive,
-        constraint = game_project_pda.is_user_claim_reward == false @ GalaKiErrors::UserAlreadyWithdraw,
     )]
     pub game_project_pda: Account<'info, GameProject>,
     #[account(

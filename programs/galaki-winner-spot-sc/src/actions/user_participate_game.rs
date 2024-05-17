@@ -96,6 +96,12 @@ pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) 
     game_project_pda.user_participated_amount(random_number, participate_amount)?;
     user_pda.add_spot_number(random_number);
     //emit event
+    emit!(UserParticipateEvent {
+         game_id: game_id,
+         time: Clock::get()?.unix_timestamp,
+         user: payer.clone().key(),
+         sport_numbers: random_number,
+    });
 
     Ok(())
 }

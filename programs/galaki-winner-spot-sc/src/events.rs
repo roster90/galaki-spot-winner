@@ -36,11 +36,11 @@ pub struct CreateGameEvent {
 }
 
 #[event]
-pub struct UserJoinGameEvent {
-    pub id: u64,
+pub struct UserParticipateEvent {
+    pub game_id: u64,
     pub time: i64,
     pub user: Pubkey,
-    pub sport_numbers: u32,
+    pub sport_numbers: u64,
 }
 #[event]
 pub struct RandomnessRequested {

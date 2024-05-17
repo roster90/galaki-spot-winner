@@ -71,9 +71,7 @@ pub mod galaki_winner_spot_sc {
         user_participate_game::handle_participate_game(ctx, game_id)
     }
 
-    pub fn request_randomness(ctx: Context<GetRandomNumber>) -> Result<()> {
-        get_random_number::handle_get_random_number(ctx)
-    }
+ 
 
     // #[access_control(ctx.accounts.validate(&ctx, &params))]
     // pub fn init_client(ctx: Context<InitClient>, params: InitClientParams) -> Result<()> {

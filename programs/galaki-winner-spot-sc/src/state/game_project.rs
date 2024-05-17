@@ -21,7 +21,6 @@ pub struct GameProject {
     pub end_time: i64,
     pub total_amount: u64,
     pub rate: u16, //4 decimals
-    pub is_user_claim_reward: bool,
 
 
 }
@@ -43,7 +42,6 @@ impl  GameProject {
         self.bump = bump;
         self.is_close = false;
         self.price_per_spot = price_per_spot;
-        self.is_user_claim_reward = false;
         Ok(())
     }
     pub fn get_spot_numbers(&self) -> usize {
@@ -79,16 +77,12 @@ impl  GameProject {
     pub fn get_total_amount(&self) -> u64 {
         self.total_amount
     }
-    
+
     pub fn user_participated_amount(&mut self, spot: u64, participate_amount: u64) -> Result<()>{
         self.add_sport_number(spot)?;
         self.total_amount += participate_amount;
         Ok(())
     }
 
-    pub fn set_user_claim_reward(&mut self, status: bool) -> Result<()>{
-        self.is_user_claim_reward = status;
-        Ok(())
-    }
     
 }
