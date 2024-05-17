@@ -67,8 +67,8 @@ pub mod galaki_winner_spot_sc {
        create_game_project::handle_create_game_project(ctx, params)
     }
 
-    pub fn player_deposit_game(ctx: Context<PlayerJoinGame>, game_id: u64) -> Result<()> {
-        user_join_game::handle_user_join_game(ctx, game_id)
+    pub fn participate(ctx: Context<UserParticipateGame>, game_id: u64) -> Result<()> {
+        user_participate_game::handle_participate_game(ctx, game_id)
     }
 
     pub fn request_randomness(ctx: Context<GetRandomNumber>) -> Result<()> {

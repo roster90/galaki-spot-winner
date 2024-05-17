@@ -7,7 +7,7 @@ use crate::*;
 
 #[derive(Accounts)]
 #[instruction(game_id: u64)]
-pub struct PlayerJoinGame<'info> {
+pub struct UserParticipateGame<'info> {
 
     #[account(
         mut,
@@ -24,14 +24,14 @@ pub struct PlayerJoinGame<'info> {
         seeds = [GAME_PROJECT, game_id.to_be_bytes().as_ref(), payer.key().as_ref()],
         bump 
     )]
-    pub player_pda: Box<Account<'info, Player>>,
+    pub user_pda: Box<Account<'info, Player>>,
 
     #[account(
         mut,
-        constraint = game_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,
+        constraint = game_project_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,
     )]
 
-    pub game_ata: Account<'info, TokenAccount>,
+    pub game_project_ata: Account<'info, TokenAccount>,
 
     #[account(mut,
         constraint = user_ata.owner == payer.key() @GalaKiErrors::TokenAccountNotMatch,
@@ -48,16 +48,13 @@ pub struct PlayerJoinGame<'info> {
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
 
-    /// CHECK: We're reading from this account; no need to deserialize it
-    pub slot_hashes: AccountInfo<'info>,
-
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_user_join_game(ctx: Context<PlayerJoinGame>, game_id: u64) -> Result<()> {
+pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) -> Result<()> {
     let game_project_pda = &mut ctx.accounts.game_project_pda;
-    let player_pda = &mut ctx.accounts.player_pda;
-    let game_ata = &mut ctx.accounts.game_ata;
+    let user_pda = &mut ctx.accounts.user_pda;
+    let game_ata = &mut ctx.accounts.game_project_ata;
     let user_ata: &mut Account<TokenAccount> = &mut ctx.accounts.user_ata;
     let token_mint = &ctx.accounts.token_mint;
     let payer = &mut ctx.accounts.payer;
@@ -65,11 +62,11 @@ pub fn handle_user_join_game(ctx: Context<PlayerJoinGame>, game_id: u64) -> Resu
 
     let decimals = token_mint.decimals;
 
-    let total_amount = (game_project_pda.price_per_spot  as u64).safe_mul(10u64.pow(decimals as u32))?; 
+    let participate_amount = (game_project_pda.price_per_spot  as u64).safe_mul(10u64.pow(decimals as u32))?; 
     //transfer token from user to game project
-    msg!("total_amount: {:?}", total_amount);
+    msg!("total_amount: {:?}", participate_amount);
 
-    require!(user_ata.amount >= total_amount, GalaKiErrors::InsufficientBalance);
+    require!(user_ata.amount >= participate_amount, GalaKiErrors::InsufficientBalance);
     msg!("transfer token from user to game project");
     
     let cpi_accounts = anchor_spl::token::Transfer {
@@ -79,10 +76,10 @@ pub fn handle_user_join_game(ctx: Context<PlayerJoinGame>, game_id: u64) -> Resu
     };
     let cpi_program = token_program.to_account_info();
 
-    anchor_spl::token::transfer(CpiContext::new(cpi_program, cpi_accounts), total_amount)?;
+    anchor_spl::token::transfer(CpiContext::new(cpi_program, cpi_accounts), participate_amount)?;
 
     //init user spot
-    player_pda.initialize(&payer.key(), ctx.bumps.player_pda, game_id)?;
+    user_pda.initialize(&payer.key(), ctx.bumps.user_pda, game_id)?;
 
     // let recent_blockhashes =SlotHashes::slot_hashes(&ctx.accounts.system_program, 0, 1)?;
 
@@ -92,12 +89,12 @@ pub fn handle_user_join_game(ctx: Context<PlayerJoinGame>, game_id: u64) -> Resu
     let slot = Clock::get()?.slot;
     let current_time = Clock::get()?.unix_timestamp as u64;
     
-    let random_number = xorshift(slot.safe_add(current_time)?);
+    let random_number = xorshift(slot.safe_add(current_time)?) % current_time;
 
     msg!("Random number: {:?}", random_number);
     require!(game_project_pda.check_spot(random_number) == false, GalaKiErrors::RandomNumberInvalid);
-    game_project_pda.add_sport_number(random_number)?;
-    player_pda.add_spot_number(random_number);
+    game_project_pda.user_participated_amount(random_number, participate_amount)?;
+    user_pda.add_spot_number(random_number);
     //emit event
 
     Ok(())

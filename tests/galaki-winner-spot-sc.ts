@@ -35,6 +35,24 @@ describe("galaki-winner-spot-sc", () => {
 
   // });
 
+  // it("create project", async () => {
+  //   // Add your test here.
+  //   const tx = await program.methods.createProject().accounts({
+  //     galakiAccount: galaki_pda,
+  //     gameProjectAccount: getAdminPda,
+  //     operatorAccount: getAdminPda,
+  //     authority: provider.wallet.publicKey,
+  //     systemProgram: anchor.web3.SystemProgram.programId,
+  //   }).rpc();
+  //   console.log("Your transaction signature", tx);
+
+  //   const state = await program.account.galaki.fetch(galaki_pda);
+  //   console.log("State", JSON.stringify(state));
+
+
+
+  // });
+
   it("Test random", async () => {
     try {
        // Add your test here.

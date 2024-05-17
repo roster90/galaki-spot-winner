@@ -40,6 +40,12 @@ pub enum GalaKiErrors {
     #[msg("Game project not found")]
     SpotAlreadyExist,
 
+    #[msg("User already withdraw")]
+    UserAlreadyWithdraw,
+
+    #[msg("User not winner")]
+    UserNotWinner,
+
     #[msg("Switchboard VRF Account's authority should be set to the client's state pubkey")]
     InvalidVrfAuthorityError,
     #[msg("The max result must not exceed u64")]

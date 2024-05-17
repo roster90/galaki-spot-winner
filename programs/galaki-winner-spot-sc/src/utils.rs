@@ -7,9 +7,9 @@ use anchor_lang::prelude::*;
 
 pub fn xorshift(seed: u64) -> u64 {
     let mut x = seed;
-    x ^= x << 13;
-    x ^= x >> 7;
-    x ^= x << 17;
+    x ^= x << 12;
+    x ^= x >> 8;
+    x ^= x << 11;
     x
 }
 

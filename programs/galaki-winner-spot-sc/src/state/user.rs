@@ -42,6 +42,10 @@ impl Player {
     pub fn get_owner(&self) -> Pubkey {
         self.owner
     }
+
+    pub fn is_winner(&self, spot_number: u64) -> bool {
+        self.spot_numbers.contains(&spot_number)
+    }
     
 }
 

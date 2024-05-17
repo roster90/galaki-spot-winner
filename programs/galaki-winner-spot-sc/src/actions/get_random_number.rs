@@ -19,9 +19,9 @@ pub fn handle_get_random_number(ctx: Context<GetRandomNumber> ) -> Result<()> {
     // let slot_hashes = SlotHashes::from_account_info(&ctx.accounts.slot_hashes)?;
 
     // let (_, most_recent_hash) = slot_hashes.iter().next().ok_or(ProgramError::InvalidAccountData)?;
-    let input = &ctx.accounts.payer.key().to_string();
-    let user_number: u64 = input.parse().map_err(|_| ProgramError::InvalidArgument)?;
-    msg!("number: {:?}", user_number);
+    // let input = &ctx.accounts.payer.key().to_string();
+    // let user_number: u64 = input.parse().map_err(|_| ProgramError::InvalidArgument)?;
+    // msg!("number: {:?}", user_number);
     // let current_time = Clock::get()?.unix_timestamp;
     // msg!("blockhash_random_seed: {:?}", blockhash_random_seed);
 
@@ -32,7 +32,7 @@ pub fn handle_get_random_number(ctx: Context<GetRandomNumber> ) -> Result<()> {
     
     let random_number = xorshift(slot.safe_add(current_time)?);
 
-    msg!("Random number: {:?}", random_number);
+    msg!("Random number: {:?}", random_number % current_time );
 //    convert string to u64 
     // msg!("Random number: {:?}", blockhash_random_seed);
     Ok(())
