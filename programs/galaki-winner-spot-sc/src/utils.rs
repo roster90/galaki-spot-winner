@@ -1,8 +1,29 @@
 
 
+use std::ops::Add;
+
 use anchor_lang::prelude::*;
+use solana_safe_math::SafeMath;
 
 
+pub fn get_random_number(number_seed: u64) -> u64{
+    let slot = Clock::get().unwrap().slot;
+    let current_time = Clock::get().unwrap().unix_timestamp as u64;
+    xorshift(slot.safe_add(current_time.add(number_seed)).unwrap()) % current_time
+}
+
+
+fn get_random_numbers( number_tickets: u16) -> Vec<u64> {
+    let slot = Clock::get().unwrap().slot;
+    let current_time = Clock::get().unwrap().unix_timestamp as u64;
+    let mut random_numbers = Vec::new();
+    for i in 0..number_tickets {
+        let random_number = xorshift(slot.safe_add(current_time.add(i as u64)).unwrap()) % current_time;
+        random_numbers.push(random_number);
+
+    }
+    random_numbers
+}
 
 
 pub fn xorshift(seed: u64) -> u64 {
@@ -18,7 +39,7 @@ pub fn xorshift(seed: u64) -> u64 {
 
 
 
-pub fn _transfer_token_from_ido<'a>(data: &'a TokenTransferParams) -> Result<()> {
+pub fn _transfer_token<'a>(data: &'a TokenTransferParams) -> Result<()> {
     let transfer_instruction = anchor_spl::token::Transfer {
         from: data.source.to_account_info(),
         to: data.destination.to_account_info(),

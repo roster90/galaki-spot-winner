@@ -49,3 +49,11 @@ pub struct RandomnessRequested {
     pub timestamp: i64,
 }
 
+#[event]
+pub struct WithdrawTokenEvent {
+    pub game_id: u64,
+    pub from: Pubkey,
+    pub to: Pubkey,
+    pub amount: u64,
+    pub timestamp: i64,
+}

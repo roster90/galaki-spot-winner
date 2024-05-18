@@ -11,9 +11,15 @@ pub struct GetWinnerSport<'info> {
         mut,
         seeds = [GAME_PROJECT, game_id.to_be_bytes().as_ref()],
         bump = game_project_pda.bump,
-        constraint = game_project_pda.is_active() == true @ GalaKiErrors::GameProjectInactive,
+        constraint = game_project_pda.get_status() == 2 @ GalaKiErrors::GameProjectInactive,
     )]
     pub game_project_pda: Box<Account<'info, GameProject>>,
+    #[account(
+        seeds = [OPERATOR_ROLE, authority.key().as_ref()],
+        bump = operator_account.bump,
+        constraint = operator_account.has_authority(authority.key(), AuthRole::Operator) == true @ GalaKiErrors::OnlyOperator,
+    )]
+    pub operator_account: Account<'info, AuthorityRole>,
     #[account(mut, signer)]
     pub authority: Signer<'info>,
     pub system_program: Program<'info, System>,

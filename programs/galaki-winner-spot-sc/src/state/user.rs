@@ -5,7 +5,7 @@ use borsh::{BorshDeserialize, BorshSerialize};
 pub struct Player {
     pub bump: u8,    //1
     pub owner: Pubkey, //32
-    pub spot_numbers: Vec<u64>,
+    pub spot_numbers: Vec<u64>, //max = 10
     pub game_id: u64,
 }
 

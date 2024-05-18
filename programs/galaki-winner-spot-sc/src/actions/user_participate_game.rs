@@ -1,6 +1,5 @@
 
 
-
 use anchor_spl::{associated_token::AssociatedToken, token::{Token, TokenAccount, Mint}};
 use solana_safe_math::SafeMath;
 use crate::*;
@@ -13,7 +12,7 @@ pub struct UserParticipateGame<'info> {
         mut,
         seeds = [GAME_PROJECT, game_id.to_be_bytes().as_ref()],
         bump = game_project_pda.bump,
-        constraint = game_project_pda.is_active() == true @ GalaKiErrors::GameProjectInactive,
+        constraint = game_project_pda.get_status() == 1 @ GalaKiErrors::GameProjectInactive,
     )]
     pub game_project_pda: Box<Account<'info, GameProject>>,
 
@@ -62,9 +61,9 @@ pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) 
 
     let decimals = token_mint.decimals;
 
-    let participate_amount = (game_project_pda.price_per_spot  as u64).safe_mul(10u64.pow(decimals as u32))?; 
+    let participate_amount: u64 = (game_project_pda.price_ticket  as u64).safe_mul(10u64.pow(decimals as u32)).unwrap(); 
     //transfer token from user to game project
-    msg!("total_amount: {:?}", participate_amount);
+    msg!("participate_amount: {:?}", participate_amount);
 
     require!(user_ata.amount >= participate_amount, GalaKiErrors::InsufficientBalance);
     msg!("transfer token from user to game project");
@@ -86,15 +85,16 @@ pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) 
     
     // let current_time = Clock::get()?.unix_timestamp;
     // msg!("blockhash_random_seed: {:?}", blockhash_random_seed);
-    let slot = Clock::get()?.slot;
-    let current_time = Clock::get()?.unix_timestamp as u64;
-    
-    let random_number = xorshift(slot.safe_add(current_time)?) % current_time;
+
+    let random_number = get_random_number(game_id);
 
     msg!("Random number: {:?}", random_number);
     require!(game_project_pda.check_spot(random_number) == false, GalaKiErrors::RandomNumberInvalid);
-    game_project_pda.user_participated_amount(random_number, participate_amount)?;
+
+    game_project_pda.user_participated_amount(random_number)?;
     user_pda.add_spot_number(random_number);
+
+
     //emit event
     emit!(UserParticipateEvent {
          game_id: game_id,
@@ -105,3 +105,5 @@ pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) 
 
     Ok(())
 }
+
+

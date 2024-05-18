@@ -46,6 +46,12 @@ pub enum GalaKiErrors {
     #[msg("User not winner")]
     UserNotWinner,
 
+    #[msg("Invalid operator wallet")]
+    InvalidOperatorWallet,
+
+    #[msg("Insufficient amount")]
+    InsufficientAmount,
+
     #[msg("Switchboard VRF Account's authority should be set to the client's state pubkey")]
     InvalidVrfAuthorityError,
     #[msg("The max result must not exceed u64")]

@@ -18,7 +18,12 @@ pub enum GameStatus {
 #[derive(AnchorSerialize, AnchorDeserialize, Debug, Clone, Copy)]
 pub struct GameInitParams {
     pub start_time: i64,     //8
-    pub end_time: i64,  //8
+    pub duration: i64,  //8
     pub currency: Pubkey,
-    pub price_per_spot: u32,
+    pub price_ticket: u32,
+    pub max_ticket: u16,
+    pub max_ticket_per_user: u16,
 }
+
+
+

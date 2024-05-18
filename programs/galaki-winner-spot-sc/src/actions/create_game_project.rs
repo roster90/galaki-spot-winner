@@ -49,13 +49,23 @@ pub fn handle_create_game_project(ctx: Context<CreateGameProject>, data: GameIni
     let game_project_pda = &mut ctx.accounts.game_project_account;
 
     let start_time = data.start_time;
-    let end_time = data.end_time;
-    let current_time = Clock::get()?.unix_timestamp;
-    require!(start_time > end_time || start_time < current_time, GalaKiErrors::TimeInvalid);
+
+
+    let current_time = Clock::get().unwrap().unix_timestamp;
+    
+
+    require!(start_time > current_time, GalaKiErrors::TimeInvalid);
 
     let game_id = galaki_pda.get_counter();
 
-    game_project_pda.initialize(game_id, data.currency,data.price_per_spot, start_time, end_time, ctx.bumps.game_project_account )?;
+    game_project_pda.initialize(game_id, 
+        data.currency,
+        data.price_ticket, 
+        data.max_ticket,
+        data.max_ticket_per_user,
+        start_time,
+        data.duration,
+    ctx.bumps.game_project_account )?;
     
     galaki_pda.auto_increase_game();
 
@@ -65,7 +75,7 @@ pub fn handle_create_game_project(ctx: Context<CreateGameProject>, data: GameIni
         id: game_id,
         currency: data.currency,
         start_time: start_time,
-        end_time: end_time,
+        end_time: start_time + data.duration,
     });
 
 
