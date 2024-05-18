@@ -53,6 +53,11 @@ pub struct UserParticipateGame<'info> {
 pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) -> Result<()> {
     let game_project_pda = &mut ctx.accounts.game_project_pda;
     let user_pda = &mut ctx.accounts.user_pda;
+
+    //check number spot of users
+
+    //check number spot of game project
+
     let game_ata = &mut ctx.accounts.game_project_ata;
     let user_ata: &mut Account<TokenAccount> = &mut ctx.accounts.user_ata;
     let token_mint = &ctx.accounts.token_mint;
@@ -60,6 +65,8 @@ pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) 
     let token_program = &ctx.accounts.token_program;
 
     let decimals = token_mint.decimals;
+
+
 
     let participate_amount: u64 = (game_project_pda.price_ticket  as u64).safe_mul(10u64.pow(decimals as u32)).unwrap(); 
     //transfer token from user to game project

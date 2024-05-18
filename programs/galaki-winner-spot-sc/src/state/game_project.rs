@@ -19,7 +19,7 @@ pub struct GameProject {
     pub spot_winner: u64,
     pub open_timestamp: i64,
     pub end_timestamp: i64,
-    pub total_ticket: u32,
+    pub total_ticket: u16,
     pub max_ticket_per_user: u16,
     pub max_ticket: u16,
 
@@ -90,7 +90,7 @@ impl  GameProject {
                 return 2; //open
             }
 
-            if self.end_timestamp < current_time  || self.is_close{
+            if self.end_timestamp < current_time  || self.is_close || self.total_ticket >= self.max_ticket{
                 return 1; //close
             }
 
