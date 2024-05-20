@@ -80,24 +80,28 @@ impl  GameProject {
         self.spot_numbers.push(spot);
         Ok(())
     }
+
+
     pub fn get_status(&self) -> u8 {
 
         let current_time = Clock::get().unwrap().unix_timestamp;
-            if self.open_timestamp < current_time {
-                return 0; //upcoming
-            }
-            if self.open_timestamp < current_time && self.end_timestamp > current_time {
-                return 2; //open
-            }
 
-            if self.end_timestamp < current_time  || self.is_close || self.total_ticket >= self.max_ticket{
-                return 1; //close
-            }
+        if self.open_timestamp < current_time {
+            return 0; //upcoming
+        }
+        if self.open_timestamp < current_time && self.end_timestamp > current_time {
+            return 2; //open
+        }
 
+        if self.end_timestamp < current_time  || self.is_close || self.total_ticket >= self.max_ticket{
+            return 1; //close
+        }
 
+        if !self.is_reward_active {
+            return 3; //reward is not active
+        }
 
- 
-            return  3; //other
+        return  4; //other
     }
 
     // fn add_sport_numbers(&mut self, spot: Vec<u64>) -> Result<()> {
