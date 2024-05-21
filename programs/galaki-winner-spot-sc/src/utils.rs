@@ -6,10 +6,10 @@ use anchor_lang::prelude::*;
 use solana_safe_math::SafeMath;
 
 
-pub fn get_random_number(number_seed: u64) -> u64{
+pub fn get_random_number() -> u64{
     let slot = Clock::get().unwrap().slot;
     let current_time = Clock::get().unwrap().unix_timestamp as u64;
-    xorshift(slot.safe_add(current_time.add(number_seed)).unwrap()) % current_time
+    xorshift(slot.safe_add(current_time.add(1)).unwrap()) % current_time
 }
 
 

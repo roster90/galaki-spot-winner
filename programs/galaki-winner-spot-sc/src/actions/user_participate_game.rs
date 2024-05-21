@@ -10,65 +10,65 @@ pub struct UserParticipateGame<'info> {
 
     #[account(
         mut,
-        seeds = [GAME_PROJECT, game_id.to_be_bytes().as_ref()],
-        bump = game_project_pda.bump,
-        constraint = game_project_pda.get_status() == 1 @ GalaKiErrors::GameProjectInactive,
+        seeds = [GALAKI_GAME_WINNER],
+        bump = ganaki_game_pda.bump,
+        constraint = ganaki_game_pda.get_status() == 1 @ GalaKiErrors::GameProjectInactive,
     )]
-    pub game_project_pda: Box<Account<'info, GameProject>>,
+    pub ganaki_game_pda: Box<Account<'info, GalakiGame>>,
 
     #[account(
         init_if_needed,
-        payer = payer,
+        payer = user,
         space = 8 + 32 + 8 + 32 + 32 + 1,
-        seeds = [GAME_PROJECT, game_id.to_be_bytes().as_ref(), payer.key().as_ref()],
+        seeds = [PLAYER, ganaki_game_pda.key().as_ref(), user.key().as_ref()],
         bump 
     )]
     pub user_pda: Box<Account<'info, Player>>,
 
     #[account(
         mut,
-        constraint = game_project_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,
+        constraint = ganaki_game_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,
     )]
 
-    pub game_project_ata: Account<'info, TokenAccount>,
+    pub ganaki_game_ata: Account<'info, TokenAccount>,
 
     #[account(mut,
-        constraint = user_ata.owner == payer.key() @GalaKiErrors::TokenAccountNotMatch,
+        constraint = user_ata.owner == user.key() @GalaKiErrors::TokenAccountNotMatch,
         constraint = user_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,
         constraint = user_ata.amount >0 @GalaKiErrors::InsufficientBalance,
     )]  
     pub user_ata: Account<'info, TokenAccount>,
     #[account(
-        constraint = token_mint.key() == game_project_pda.currency @GalaKiErrors::TokenAccountNotMatch,
+        constraint = token_mint.key() == ganaki_game_pda.currency @GalaKiErrors::TokenAccountNotMatch,
     )] 
     pub token_mint: Account<'info, Mint>,
     #[account(mut, signer)]
-    pub payer: Signer<'info>,
+    pub user: Signer<'info>,
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
 
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) -> Result<()> {
-    let game_project_pda = &mut ctx.accounts.game_project_pda;
+pub fn handle_participate_game(ctx: Context<UserParticipateGame>) -> Result<()> {
+    let ganaki_game_pda = &mut ctx.accounts.ganaki_game_pda;
     let user_pda = &mut ctx.accounts.user_pda;
 
     //check number spot of users
 
     //check number spot of game project
 
-    let game_ata = &mut ctx.accounts.game_project_ata;
+    let game_ata = &mut ctx.accounts.ganaki_game_ata;
     let user_ata: &mut Account<TokenAccount> = &mut ctx.accounts.user_ata;
     let token_mint = &ctx.accounts.token_mint;
-    let payer = &mut ctx.accounts.payer;
+    let payer = &mut ctx.accounts.user;
     let token_program = &ctx.accounts.token_program;
 
     let decimals = token_mint.decimals;
 
 
 
-    let participate_amount: u64 = (game_project_pda.price_ticket  as u64).safe_mul(10u64.pow(decimals as u32)).unwrap(); 
+    let participate_amount: u64 = (ganaki_game_pda.price_ticket  as u64).safe_mul(10u64.pow(decimals as u32)).unwrap(); 
     //transfer token from user to game project
     msg!("participate_amount: {:?}", participate_amount);
 
@@ -85,7 +85,7 @@ pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) 
     anchor_spl::token::transfer(CpiContext::new(cpi_program, cpi_accounts), participate_amount)?;
 
     //init user spot
-    user_pda.initialize(&payer.key(), ctx.bumps.user_pda, game_id)?;
+    user_pda.initialize(&payer.key(), ctx.bumps.user_pda)?;
 
     // let recent_blockhashes =SlotHashes::slot_hashes(&ctx.accounts.system_program, 0, 1)?;
 
@@ -93,21 +93,23 @@ pub fn handle_participate_game(ctx: Context<UserParticipateGame>, game_id: u64) 
     // let current_time = Clock::get()?.unix_timestamp;
     // msg!("blockhash_random_seed: {:?}", blockhash_random_seed);
 
-    let random_number = get_random_number(game_id);
+    let random_number = get_random_number();
 
     msg!("Random number: {:?}", random_number);
-    require!(game_project_pda.check_spot(random_number) == false, GalaKiErrors::RandomNumberInvalid);
+    require!(ganaki_game_pda.check_spot(random_number) == false, GalaKiErrors::RandomNumberInvalid);
 
-    game_project_pda.user_participated_amount(random_number)?;
+    ganaki_game_pda.user_participated_amount(random_number)?;
     user_pda.add_spot_number(random_number);
 
 
     //emit event
+    let clock = Clock::get().unwrap();
     emit!(UserParticipateEvent {
-         game_id: game_id,
-         time: Clock::get()?.unix_timestamp,
+         game: ganaki_game_pda.key(),
+         time: clock.unix_timestamp,
          user: payer.clone().key(),
          sport_numbers: random_number,
+         slot: clock.slot,
     });
 
     Ok(())

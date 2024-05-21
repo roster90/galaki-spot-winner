@@ -7,9 +7,8 @@ pub const OPERATOR_ROLE: &[u8] = b"OPERATOR_ROLE";
 
 pub const PLAYER: &[u8] = b"PLAYER";
 
-pub const GAME_PROJECT: &[u8] = b"GAME_PROJECT";
 
-pub const GALAKI_WINNER: &[u8] = b"GALAKI_WINNER";
+pub const GALAKI_GAME_WINNER: &[u8] = b"GALAKI_WINNER";
 
 
 

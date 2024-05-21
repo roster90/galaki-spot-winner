@@ -37,38 +37,19 @@ pub mod galaki_winner_spot_sc {
    
 
     //owner fn
-    pub fn initialize(ctx: Context<InitializeGanaki>, operator_wallet: Pubkey) -> Result<()> {
-        initialize_galaki::handle_initialize_galaki(ctx, operator_wallet)
+    pub fn initialize(ctx: Context<InitializeGanakiGame>, params: GameInitParams) -> Result<()> {
+        create_galaki_game::handle_initialize_galaki(ctx, params)
     }
+
     //admin fn
     pub fn set_admin(ctx: Context<SetAdmin>, new_admin: Pubkey) -> Result<()> {
         set_auth_role::handle_set_admin(ctx, new_admin)
     }
-    //admin fn
-    pub fn remove_admin(ctx: Context<RemoveAdmin>, admin: Pubkey) -> Result<()> {
-        set_auth_role::handle_remove_admin(ctx, admin)
-    }
-    //admin fn
-    pub fn set_operator(ctx: Context<SetOperator>, new_operator: Pubkey) -> Result<()> {
-        set_auth_role::handle_set_operator(ctx, new_operator)
-    }
 
-    //admin fn
-    pub fn remove_operator(ctx: Context<RemoveOperator>, operator: Pubkey) -> Result<()> {
-        set_auth_role::handle_remove_operator(ctx, operator)
-    }
-    // #[access_control(ctx.accounts.validate(&ctx, &params))]
-    pub fn change_operator_wallet(ctx: Context<ChangeOperatorWallet>, new_operator_wallet: Pubkey) -> Result<()> {
-        change_operator_wallet::handle_change_operator_wallet(ctx, new_operator_wallet)
-    }
 
-    //operator fn
-    pub fn create_project(ctx: Context<CreateGameProject>, params: GameInitParams) -> Result<()> {
-       create_game_project::handle_create_game_project(ctx, params)
-    }
 
-    pub fn participate(ctx: Context<UserParticipateGame>, game_id: u64) -> Result<()> {
-        user_participate_game::handle_participate_game(ctx, game_id)
+    pub fn participate(ctx: Context<UserParticipateGame>) -> Result<()> {
+        user_participate_game::handle_participate_game(ctx)
     }
 
  

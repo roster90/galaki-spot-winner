@@ -6,11 +6,11 @@ use anchor_spl::{associated_token::AssociatedToken, token::{Token, TokenAccount,
 pub struct UserClaimReward<'info> {
 
     #[account(
-        seeds = [GAME_PROJECT, game_id.to_be_bytes().as_ref()],
+        seeds = [GALAKI_GAME_WINNER],
         bump = game_project_pda.bump,
         constraint = game_project_pda.is_close == true @ GalaKiErrors::GameProjectInactive,
     )]
-    pub game_project_pda: Account<'info, GameProject>,
+    pub game_project_pda: Account<'info, GalakiGame>,
     #[account(
         mut,
         constraint = game_project_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,

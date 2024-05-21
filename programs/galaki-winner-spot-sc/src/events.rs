@@ -37,10 +37,11 @@ pub struct CreateGameEvent {
 
 #[event]
 pub struct UserParticipateEvent {
-    pub game_id: u64,
+    pub game: Pubkey,
     pub time: i64,
     pub user: Pubkey,
     pub sport_numbers: u64,
+    pub slot: u64,
 }
 #[event]
 pub struct RandomnessRequested {
@@ -51,7 +52,6 @@ pub struct RandomnessRequested {
 
 #[event]
 pub struct WithdrawTokenEvent {
-    pub game_id: u64,
     pub from: Pubkey,
     pub to: Pubkey,
     pub amount: u64,
