@@ -6,6 +6,8 @@ pub struct Player {
     pub bump: u8,    //1
     pub owner: Pubkey, //32
     pub spot_numbers: Vec<u64>, //max = 10
+    pub is_claimed_reward: bool,
+    pub amount_claimed: u64
 }
 
 
@@ -31,6 +33,12 @@ impl Player {
     
     pub fn get_spot_numbers(&self) -> Vec<u64> {
         self.spot_numbers.clone()
+    }
+
+    pub fn claim_reward(&mut self, amount: u64)-> Result<()> {
+        self.is_claimed_reward = true;
+        self.amount_claimed = amount;
+        Ok(())
     }
     
     

@@ -7,21 +7,21 @@ pub struct UserClaimReward<'info> {
 
     #[account(
         seeds = [GALAKI_GAME_WINNER],
-        bump = game_project_pda.bump,
-        constraint = game_project_pda.is_close == true @ GalaKiErrors::GameProjectInactive,
+        bump = game_pda.bump,
+        constraint = game_pda.is_close == true @ GalaKiErrors::GameProjectInactive,
     )]
-    pub game_project_pda: Account<'info, GalakiGame>,
+    pub game_pda: Account<'info, GalakiGame>,
     #[account(
         mut,
-        constraint = game_project_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,
-        constraint = game_project_ata.owner == game_project_pda.key() @GalaKiErrors::TokenAccountNotMatch,
+        constraint = game_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,
+        constraint = game_ata.owner == game_pda.key() @GalaKiErrors::TokenAccountNotMatch,
     )]
-    pub game_project_ata: Account<'info, TokenAccount>,
+    pub game_ata: Account<'info, TokenAccount>,
 
     #[account(
         seeds = [PLAYER, game_id.to_be_bytes().as_ref(), payer.key().as_ref()],
         bump = user_pda.bump,
-        constraint = user_pda.is_winner(game_project_pda.spot_winner) == true @ GalaKiErrors::UserNotWinner,
+        constraint = user_pda.is_winner(game_pda.spot_winner) == true @ GalaKiErrors::UserNotWinner,
     )]
     
     pub user_pda: Box<Account<'info, Player>>,
@@ -30,7 +30,7 @@ pub struct UserClaimReward<'info> {
     )]
     pub user_ata: Account<'info, TokenAccount>,
     #[account(
-        constraint = token_mint.key() == game_project_pda.currency @GalaKiErrors::TokenAccountNotMatch,
+        constraint = token_mint.key() == game_pda.currency @GalaKiErrors::TokenAccountNotMatch,
     )] 
     pub token_mint: Account<'info, Mint>,
     #[account(mut, signer)]
@@ -40,19 +40,39 @@ pub struct UserClaimReward<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handle_user_claim_reward(ctx: Context<UserClaimReward>, game_id: u64) -> Result<()> {
-    let game_project_pda = &ctx.accounts.game_project_pda;
-    let game_ata = &ctx.accounts.game_project_ata;
-    let user_ata: &mut Account<TokenAccount> = &mut ctx.accounts.user_ata;
-    let token_mint = &ctx.accounts.token_mint;
-    let payer = &ctx.accounts.payer;
-
-    let user_balance = user_ata.amount;
+pub fn handle_user_claim_reward(ctx: Context<UserClaimReward>) -> Result<()> {
+    let game_ata: &Account<TokenAccount> = &ctx.accounts.game_ata;
+    let game_pda = &ctx.accounts.game_pda;
+    let user_pda = &mut ctx.accounts.user_pda;
+    
     let game_balance = game_ata.amount;
 
-    require!(user_balance > 0, GalaKiErrors::InsufficientBalance);
     require!(game_balance > 0, GalaKiErrors::InsufficientBalance);
-    //handle winner withdraw rewards
+
+    let remaining = game_balance;
+
+    let seeds: &[&[u8]] = &[GALAKI_GAME_WINNER, &[ctx.accounts.game_pda.bump]];
+    let signer = &seeds[..];
+    _transfer_token( &TokenTransferParams {
+        source: game_ata.to_account_info(),
+        destination: ctx.accounts.user_ata.to_account_info(),
+        authority: ctx.accounts.game_pda.to_account_info(),
+        token_program: ctx.accounts.token_program.to_account_info(),
+        authority_signer_seeds:signer,
+        amount: remaining,
+    })?;
+
+    //update user pda
+    user_pda.claim_reward(remaining)?;
+
+    //emit event transfer token
+    emit!(WithdrawTokenEvent{
+        amount: remaining,
+        from: game_pda.key(),
+        to: user_pda.key(),
+        timestamp: Clock::get()?.unix_timestamp,
+    });
+
 
     Ok(())
 }

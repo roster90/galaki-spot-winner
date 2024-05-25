@@ -13,7 +13,7 @@ pub fn get_random_number() -> u64{
 }
 
 
-fn get_random_numbers( number_tickets: u16) -> Vec<u64> {
+fn _get_random_numbers( number_tickets: u16) -> Vec<u64> {
     let slot = Clock::get().unwrap().slot;
     let current_time = Clock::get().unwrap().unix_timestamp as u64;
     let mut random_numbers = Vec::new();
