@@ -29,7 +29,6 @@ pub struct UserParticipateGame<'info> {
         mut,
         constraint = ganaki_game_ata.mint == token_mint.key() @GalaKiErrors::TokenAccountNotMatch,
     )]
-
     pub ganaki_game_ata: Account<'info, TokenAccount>,
 
     #[account(mut,
@@ -100,6 +99,7 @@ pub fn handle_participate_game(ctx: Context<UserParticipateGame>) -> Result<()> 
 
     ganaki_game_pda.user_participated_amount(random_number)?;
     user_pda.add_spot_number(random_number);
+
 
 
     //emit event

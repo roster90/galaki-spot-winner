@@ -1,13 +1,6 @@
 use anchor_lang::prelude::*;
 
 
-// pub use switchboard_v2::{SWITCHBOARD_PROGRAM_ID};
-
-
-// pub use switchboard_v2::{
-//     OracleQueueAccountData, PermissionAccountData, SbState,VrfRequestRandomness, VrfAccountData
-// };
-
 declare_id!("3D4YaviBjiz7DXDeGtKRerkU3q2rNrDhvqPd5sRTE8QB");
 
 pub mod types;
@@ -50,6 +43,14 @@ pub mod galaki_winner_spot_sc {
 
     pub fn participate(ctx: Context<UserParticipateGame>) -> Result<()> {
         user_participate_game::handle_participate_game(ctx)
+    }
+
+    pub fn get_winner_spot(ctx: Context<GetWinnerSport>, seed: u64) -> Result<()> {
+        get_winner_spot::handle_get_winner_sport(ctx, seed)
+    }
+
+    pub fn withdraw(ctx: Context<WithdrawSpl>, amount: u64) -> Result<()> {
+        withdraw::withdraw_spl_handle(ctx, amount)
     }
 
  

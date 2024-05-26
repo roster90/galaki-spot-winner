@@ -53,24 +53,20 @@ describe("galaki-winner-spot-sc", () => {
 
   // });
 
-  it("Test random", async () => {
-    try {
-       // Add your test here.
-    const tx = await program.methods.requestRandomness().accounts({
-      payer: provider.wallet.publicKey,
-      systemProgram: anchor.web3.SystemProgram.programId,
-      // slotHashes: anchor.web3.SYSVAR_SLOT_HASHES_PUBKEY,
-    }).rpc();
-    console.log("Your transaction signature", tx);
+  // it("Test random", async () => {
+  //   try {
+  //      // Add your test here.
+  //   const tx = await program.methods.requestRandomness().accounts({
+  //     payer: provider.wallet.publicKey,
+  //     systemProgram: anchor.web3.SystemProgram.programId,
+  //     // slotHashes: anchor.web3.SYSVAR_SLOT_HASHES_PUBKEY,
+  //   }).rpc();
+  //   console.log("Your transaction signature", tx);
 
  
-    } catch (error) {
-        console.log("Error", error);
-        
-    }
-   
-
-    
-
-  });
+  //   } catch (error) {
+  //       console.log("Error", error);
+  
+  //   }
+  // });
 });
